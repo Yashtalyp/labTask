@@ -31,7 +31,7 @@ public class Task_1
             }
 
             String sql = """
-                SELECT * FROM (SELECT
+                SELECT surname FROM (SELECT
                     surname,
                     DENSE_RANK () OVER (\s
                         ORDER BY experience DESC
