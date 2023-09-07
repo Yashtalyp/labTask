@@ -2,10 +2,6 @@ package org.example;
 
 import java.sql.*;
 
-/**
- * Hello world!
- *
- */
 public class Task_1
 {
     public static void main( String[] args )
@@ -18,9 +14,9 @@ public class Task_1
             String[] queries = {
                     """
                     CREATE TABLE test_table (
-                    	id INTEGER PRIMARY KEY,
-                    	surname VARCHAR NOT NULL,
-                    	experience INTEGER
+                        id INTEGER PRIMARY KEY,
+                        surname VARCHAR NOT NULL,
+                        experience INTEGER
                     );""",
                     "INSERT INTO test_table(surname, experience) VALUES('Иванов', 10);",
                     "INSERT INTO test_table(surname, experience) VALUES('Петров', 12);",
@@ -33,13 +29,17 @@ public class Task_1
                 Statement stmt = connection.createStatement();
                 stmt.execute(sql);
             }
-            
+
             String sql = """
-                SELECT surname
-                FROM test_table
-                WHERE experience < (SELECT MAX(experience) FROM test_table)
-                ORDER BY experience DESC
-                LIMIT 1;""";
+                SELECT * FROM (SELECT
+                    surname,
+                    DENSE_RANK () OVER (\s
+                        ORDER BY experience DESC
+                    ) RankVal
+                FROM
+                    test_table)
+                WHERE RankVal = 2
+                LIMIT 1""";
             Statement stmt  = connection.createStatement();
             ResultSet rs    = stmt.executeQuery(sql);
 
